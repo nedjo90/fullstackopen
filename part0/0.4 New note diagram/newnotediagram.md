@@ -3,6 +3,11 @@ sequenceDiagram
     participant browser
     participant server
 
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_notes
+    activate server
+    server->>browser: 302 redirection location: /exampleapp/notes
+    deactivate server
+
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
     activate server
     server-->>browser: HTML document
