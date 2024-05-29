@@ -2,7 +2,7 @@ const Persons = ({persons}) =>
 {
     return (
         persons.map(person =>
-            <li key={person.name}>{person.name}</li>
+            <li key={person.name}>{person.name} {person.number}</li>
         )
     )
 }
