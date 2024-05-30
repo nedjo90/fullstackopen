@@ -6,6 +6,7 @@ import Persons from "./components/persons.jsx";
 import PersonForm from "./components/PersonForm.jsx";
 import Filter from "./components/Filter.jsx";
 import axios from "axios";
+import personsServices from './services/persons.js'
 
 
 const App = () => {
@@ -33,26 +34,49 @@ const App = () => {
         return persons.filter(person => person.name.includes(filter));
     }
 
+    const removePerson = (id) =>
+    {
+        personsServices
+            .remove(id)
+            .then(
+                () => setPersons(persons.filter(person => person.id !== id))
+            );
+    }
+
+    const updateNumber = (changedPerson) =>
+    {
+        if (window.confirm(`${changedPerson.name} is already added to phonebook, replace the old number with a new one ?`))
+        {
+            personsServices
+                .update(changedPerson.id, changedPerson)
+                .then( returnedPerson => {
+                    setPersons(persons.map(
+                        person => person.id !== returnedPerson.id ? person : returnedPerson
+                    ))
+                });
+        }
+    }
+
     const addNewPerson = (event) =>
     {
         event.preventDefault();
 
-        let message = '';
-        if (persons.find(person => person.name === newName) !== undefined)
-            message.concat(`${newName} is already add to phonebook\n`);
-        if(persons.find(person => person.number === newNumber) !== undefined )
-            message.concat(`${newNumber} is already add to phonebook\n`);
-        if (message !== '')
-        {
-            alert(message);
-            return;
-        }
+        const existingPerson = persons.find(person => person.name.toLowerCase() === newName.toLowerCase());
         const personObject = {
             name: newName,
             number: newNumber
         }
-        const updatePersons = persons.concat(personObject);
-        setPersons(updatePersons);
+        if(!existingPerson)
+        {
+            personsServices
+                .create(personObject)
+                .then(returnedPerson => setPersons(persons.concat(returnedPerson)));
+        }
+        else if (existingPerson && existingPerson.number !== newNumber)
+        {
+            personObject.id = existingPerson.id;
+            updateNumber(personObject);
+        }
     }
     return (
         <div>
@@ -61,7 +85,7 @@ const App = () => {
             <h2>add a new</h2>
             <PersonForm newName={newName} newNumber={newNumber} nameChange={handleNameChange} numberChange={handleNumberChange} addNewPerson={addNewPerson}/>
             <h2>Numbers</h2>
-            <Persons persons={personsFiltered()}/>
+            <Persons persons={personsFiltered()} altering={removePerson}/>
         </div>
     )
 }
