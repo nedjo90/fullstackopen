@@ -6,7 +6,7 @@ const Content = ({notes, toggle}) => {
         <div>
             {
                 notes.map(note =>
-                    <li key={note.id}>
+                    <li key={note.id} className='note'>
                         {note.content}
                         <button onClick={()=>toggle(note.id)}>{note.important ? 'important' : 'not' +
                             ' important'}</button>

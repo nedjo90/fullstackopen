@@ -6,7 +6,7 @@ const Persons = ({persons, altering}) =>
                 {person.name} {person.number}
                 <button onClick={
                     () =>
-                        window.confirm(`Delete ${person.name}`) ? altering(person.id) : ''}
+                        window.confirm(`Delete ${person.name}`) ? altering(person) : ''}
                 >
                 delete</button>
             </li>

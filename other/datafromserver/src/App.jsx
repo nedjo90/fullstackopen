@@ -5,11 +5,13 @@ import {
 } from "react";
 import Content from "./components/content.jsx";
 import noteService from './services/notes.js'
+import Notification from "./components/notification.jsx";
 
 function App() {
-  const[notes, setNotes] = useState([]);
-  const[newNote, setNewNote] = useState('');
+  const [notes, setNotes] = useState([]);
+  const [newNote, setNewNote] = useState('');
   const [showAll, setShowAll] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const addNotes = event => {
       event.preventDefault();
@@ -45,12 +47,20 @@ function App() {
                 setNotes(notes.map(n => n.id !== id ? n : returnedNote));
             })
             .catch(error => {
-                alert(`the note '${note.content}' was already delete from server`)
+                setErrorMessage(
+                    `Note '${note.content}' was already removed from server`
+                )
+                setTimeout(() => {
+                    setErrorMessage(null)
+                }, 5000)
+                setNotes(notes.filter(n => n.id !== id))
             });
     }
 
   return (
       <div>
+          <h1>Notes</h1>
+          <Notification message={errorMessage}/>
           <input type="text" onChange={handleNoteChange}/>
           <button onClick={addNotes}>save</button>
           <input type="checkbox" onChange={handleShowChange}/>
