@@ -1,11 +1,13 @@
 import CountryInfo from "./countryInfo.jsx";
 
-const Countries = ({list, showing}) =>
+
+const Countries = ({list, showing, temp}) =>
 {
-    if (list.length === 1)
+    if (list.length === 1){
         return (
-            <CountryInfo info={list[0]}/>
+            <CountryInfo info={list[0]} temp={temp}/>
         )
+    }
     if (list.length > 10)
         return (
             <p>Too many matches, specify another filter</p>
